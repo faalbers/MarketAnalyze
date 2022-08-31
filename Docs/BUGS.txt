@@ -1,0 +1,3 @@
+- multiple symbols with same name but different country
+- MarketWatch CapitaGain scrape not read correctly . Both Capita Gain (YTD), Capita Gain (2021) go to same attribute
+- Dividend and Capital Gain attributes need to be capitalized

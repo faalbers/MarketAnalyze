@@ -1,0 +1,339 @@
+categorization:
+https://www.thebalance.com/mutual-fund-categories-2466742#
+- STOCK:
+    - CAP
+    - STRATEGY:
+        - BLEND
+        - GROWTH
+        - VALUE
+        - CAPITALIZATION
+        - GLOBAL
+        - INTERNATIONAL
+        - SECTOR / COMODITIES
+- BOND:
+    - TERM:
+        - LONG
+        - SHORT
+    - CREDITQUALITY:
+        - HIGH
+        - LOW
+- BALANCED:
+    - GROWTH
+    - INCOME
+- CASH / MONEY MARKET
+
+data to find:
+- NAV: net asset value
+    - The price of a mutual fund share is referred to as the net asset value (NAV) per share, sometimes expressed as NAVPS.
+    - A fund's NAV is derived by dividing the total value of the securities in the portfolio by the total amount of shares outstanding.
+    - Outstanding shares are those held by all shareholders, institutional investors, and company officers or insiders.
+
+- Name:
+    - Titels show type of funds
+
+- Strategy:
+    - STOCKS: (EQUITY)
+        - An equity fund is a mutual fund that invests principally in stocks. It can be actively
+          or passively (index fund) managed. Equity funds are also known as stock funds.
+    
+    - BONDS
+        - Federal Goverments
+        - Corporations
+        - investors are paid a fixed amount back on their initial investment
+        - Bond Index
+            - a diversified portfolio of bonds that are chosen to align with the performance of a specific bond index.
+              An index seeks to track the value or performance of the securities in that index. So a bond index fund invests
+              in those securities with the aim of closely matching that performance
+    
+    - BALANCED:
+        - A balanced fund is a mutual fund that typically contains a component of stocks and bonds.
+          A mutual fund is a basket of securities in which investors can purchase. Typically, balanced funds
+          stick to a fixed asset allocation of stocks and bonds, such as 70% stocks and 30% bonds. Bonds are
+          debt instruments that usually pay a stable, fixed rate of return.
+          The investment objective for a balanced mutual fund tends to be a mixture of growth and income,
+          which leads to the balanced nature of the fund. Balanced mutual funds are geared toward investors
+          who are looking for a mixture of safety, income, and modest capital appreciation.
+        - Also known as asset allocation funds. Combination of equity and fixed-income funds with a fixed ratio of investments such as 60% stocks and 40% bonds.
+          Meant to to reduce the risk of exposure across asset classes
+        - Balanced funds (also called asset allocation funds or hybrid funds) are often a “fund of funds,” investing in a group of other mutual funds
+    
+    - VALUE
+        - A value fund seeks to invest in stocks that are deemed to be undervalued in price based
+          on fundamental characteristics. Value investing is often contrasted with growth investing,
+          which focuses on emerging companies with high growth prospects.
+          aka divident mutual funds
+        - Picking Stable Value Fund:
+            - credit quality or rate
+                - lower quality is greater risk
+                - high quality survives better through economies
+            - tipical drivers are:
+                - duration
+                - credit quality
+            - longer duration or lower quality = higher yield
+            - choose some risk, but not too high
+
+    - GROWTH
+        - A growth fund is a diversified portfolio of stocks that has capital appreciation as its
+          primary goal, with little or no dividend payouts. The portfolio mainly consists of companies
+          with above-average growth that reinvest their earnings into expansion, acquisitions, or research
+          and development (R&D). Most growth funds offer higher potential capital appreciation but usually
+          at above-average risk.
+        - Higher growth, more potential volatility
+        - Younger people tend to go for these
+    
+    - BLEND
+        - A blend fund (or blended fund) is a type of equity mutual fund that includes a mix of both value
+          and growth stocks. These funds offer investors diversification among these popular investment
+          styles in a single portfolio. Blend funds are a particular case of a hybrid fund.
+    
+    - CAPITALIZATION:
+        - Size of companies.
+          shares outstanding * share price = capitalization
+    
+    - SECTOR / COMODITIES:
+        - Specialty (Based on industry or sector) funds
+
+    - INCOME
+        - An income fund is a type of mutual fund or exchange-traded fund (ETF) that emphasizes
+          current income, either on a monthly or quarterly basis, as opposed to capital gains
+          or appreciation. Such funds usually hold a variety of government, municipal, and
+          corporate debt obligations, preferred stock, money market instruments, and dividend-paying stocks.
+          They may invest in bonds or other fixed-income securities as well as preferred shares and
+          dividend stocks.
+        - Holding these bonds until maturity to provide interest streams
+    
+    - INDEX (PASSIVE)
+        - An index fund is a type of mutual fund or exchange-traded fund (ETF) with a portfolio
+          constructed to match or track the components of a financial market index, such as the
+          Standard & Poor’s 500 Index (S&P 500). An index mutual fund is said to provide broad
+          market exposure, low operating expenses, and low portfolio turnover. These funds follow
+          their benchmark index regardless of the state of the markets. 
+        - passive investment by following index. No managing = much lower fees
+        - all index funds are mutual funds
+        - You can only by or sell once a day
+        - they offer automatic reinvestment per month that is free
+    
+    - ETF
+        - Exchange Traded Funds
+        - Very similar to Index, but trade multiple times a day possible
+        - You can buy and sell them as if they were a stock through the day
+        - have to pay trading comissions
+        - not considered mutual funds but employ strategies consistent with mutual funds
+        - structured as investment trusts that are traded on stock exchanges and have the added benefits of the features of stocks
+        - also enjoy tax advantages from mutual funds
+
+    - CEF
+        - Closed-end funds
+        - Investment vehicles with shares listed on multiple global stock exchanges, like the New York Stock Exchange
+          and the London Stock Exchange, that essentially trade like stocks. Closed-end funds still command significant attention in the
+          investment world, even though they are in moderate decline lately.
+    
+    - MONEY MARKET:
+        - Short-term debt fund
+        - Invest in high-quality, short-term debt from governments, banks or corporations. Like U.S. Treasurys, certificates of deposit and commercial paper.
+    
+    - FUTURE
+        - The Future Fund is a financial asset fund, set up to strengthen the Commonwealth's long-term financial position by making provision for unfunded
+          superannuation liabilities that will become payable during a period when an ageing population is likely to place significant pressure on the
+          Commonwealth's finances.
+    
+    - DOMESTIC
+        - US based
+
+    - GLOBAL
+        - A global fund is a fund that invests in companies located anywhere in the world including the
+          investor’s own country. A global fund seeks to identify the best investments from a global
+          universe of securities. Global funds may also be passively managed.
+    
+    - INTERNATIONAL
+        - An international fund is a mutual fund that can invest in companies located anywhere in the world
+          outside of its investors' country of residence. International funds differ from global funds,
+          which can invest in companies from any country in the world. International funds may also be
+          referred to as foreign funds.
+    
+    - EMERGING
+        - Countries with small but growing markets
+    
+    - TARGET DATE
+
+    - LONG-SHORT EQUITY
+        - Long-short equity is an investment strategy that seeks to take a long position in underpriced stocks while selling short overpriced shares
+        - Long-short seeks to augment traditional long-only investing by taking advantage of profit opportunities from securities identified as both
+          under-valued and over-valued.
+        - Long-short equity is commonly used by hedge funds, which often take a relative long bias—for instance, a 130/30 strategy where
+          long exposure is 130% of AUM and 30% is short exposure.
+        - Long Position in stocks that are expected to appreciate and are underpriced
+        - Short position in stocks that are expected to decline and are overpriced
+        - Having a Long Position in a security means that you own the security. Investors maintain Long security positions in the expectation that the
+          stock will rise in value in the future. It describes what an investor has purchased when they buy a security or derivative with the
+          expectation that it will rise in value. A bullish attitude. A long position in options contracts indicates the holder owns the underlying
+          asset. Being long on a stock or bond investment is a measurement of time.
+        - Having a Short Position in a security is generally the sale of a stock you do not own.
+
+- Allocation:
+    - Asset allocation sums up to 100%,  which means that the invested volume and cash all together build total net assets.
+    - Shorting on the asset may cause negative allocation
+
+- Minimum Investment Amount
+    - Larger amounts have normaly lower Fees
+
+- Fees
+    - Expense Ratio:
+        - Running cost to maintain fund
+        - percent of value of your account taken out in certain timely period
+        - 1% considered high, 0.5% is common
+        - Total Expense Ratio:
+            - Measures the total costs related to managing an investment fund
+            - It is also the total cost of an investment to an investor. TER is important to investors because it determines
+              whether an investment is profitable or otherwise given its associated costs.
+        - Net Expense Ratio:
+            - Net expense ratio and 'after reimbursement expense ratio' are other terms that have the same meaning as the total expense ratio (TER).
+            - This ratio reflects the percentage of mutual fund or ETF assets steered toward a fund's operating expenses and
+              fund management fees. It's basically a list of fund expenses, minus brokerage costs and sales charges, and is
+              calculated into the fund's net asset value (NAV.)
+        - Gross Expense Ratio:
+            - Measures the total percentage of the mutual funds assets used in operating or managing the fund
+        - Adjusted Expense Ratio:
+            - Excludes certain variable investment-related expenses, such as interest from borrowings and dividends on borrowed securities,
+              sallowing for more consistent cost comparisons across funds
+    - Front-endLoad:
+        - If buying or selling directly you could be charged for a load = comission (in percent)
+        - Most funds don't anymore
+        - Stay away from funds with Load
+
+    - Purchase and sale fees:
+        - Broker may charge a fee per transaction (buy or sell)
+
+- Distribution:
+    - Yield (make sure what unit it's in, mostly percent) (aka distribution yield)
+        - Percentage of holdings value payed
+            - Yield = Annual Divident and or interest payment per share / NAV
+            - Calculated daily with the fund's net asset value (NAV), which is determined after the market closes each day.
+            - Check prospectus on how exactly it is calculated
+        - Dividends
+            - Dividend Yield = Divident payed / Stock price
+            - The trailing twelve month dividend yield is the sum of the dividends paid over the past twelve months
+              divided by the value of one mutual fund share
+            - Equity Funds pay dividends payed by the stocks in portfolio. If any of these stocks pay dividends, then
+              the mutual fund also pays dividends.
+        - Interest
+            - Most bonds pay guaranteed amounts of interest each year, called coupon payments. Because bonds pay interest,
+              bond funds do as well.
+            - Money market funds pay interest, though the rate of return is generally lower than other fund types
+        - SEC yield is an annualized figure based on returns over the most recent 30-day period
+        - Total return takes into consideration all dividend distributions paid to the fund
+        - Capital Gain
+            - Any increase in a capital asset's value.
+            - Payments from a mutual fund or an exchange-traded fund (ETF) to its holders that are a portion
+              of proceeds from the fund's sales of stocks or other portfolio assets.
+            - tend not to be accurate
+        - Return to shareholders to reinvest
+        - Higher yield mostly have riskier investments
+        - Upp Yield Curve = bullish
+        - Down Yield Curve = bearish
+        - high yield could be high expense ratio
+        - Yield Curve in Bonds:
+            - Bond Yield = Interest or Annual Coupon Payment / Bond price
+              example ... $60/year and market value of $1000 , 6% Yield
+            - curve is y-axis = yield and x-axis = maturity time
+        - Picking good High Yield Bond Fund:
+            - High Yield = Big returns with significant risks
+            - largely corporate Bonds
+            - lower quality , economic sensitive
+            - get hit harder when economy goes down
+
+Risk:
+    - Low Risk:
+        - Debt Funds
+    - Moderate Risk:
+        - Hybrid Funds
+    - High Risk:
+        - Equity Funds
+    - Measures:
+        - Beta:
+            Calculates relative volatility of a stock/mutual fund as against the benchmark.
+            Default Beta = 1.0
+            1.0 = Fund moves in line with the benchmark
+            Lower value is lower relative risk. But it's relative, not an actual risk factor.
+            Good for diversification analysis.
+            Based on historical data, so it's not a guaranty of future results
+
+        - Alpha:
+            Gauges the performance of an investment against a market index or bench mark in percentage.
+            Alpha = 0% = performed exactly the same as bench mark
+            Used in conjunction with Beta
+            Based on historical data, so it's not a guaranty of future results
+
+        - R-Squared:
+            Measures a fund's correlation to it's benchmark performance.
+            R2 = 100 = fund perfectly correlated with performance of benchmark
+            Index Funds have a range of 98 - 100
+            R2 < 80 = fund does not perform like typical index
+            if R2 = 90-100 , maybe change to Index fund that have lower Expense Ratio
+            Value fund categort have usually R2 < 90
+
+        - Standard Deviation:
+            Represents the volatility or riskiness of the fund.
+            Lets say of the average return = 10% but it fluctuated between +20% and -15%,
+            the fluctuation is what Standard Deviation captures.
+            If Average Return = 10% and Standard Deviation = 3%,
+            68% of the time it can be 10% - 3% or 10% + 4%
+            The higher the deviation , the higher the volatility is.
+            Sectoral Thematic and Small Cap Funds have higher Deviation = higher Volatility
+            Hybrid Funds have smaller Deviation
+
+        - Sharpe Ratio:
+            Measures the performance of an investment compared to risk-free asset, after
+            adjusting for its risk.
+            (RP-RF)/SD
+            RP = return on portfolio
+            RF = Risk free rate of return
+            SD = Standard Deviation
+            The higher , the better risk adjusted return. It has better potential in earning
+            more return per unit of risk.
+
+        - Sortino Ratio
+
+Fund structure and management:
+    - Fund Company that creates and manages it
+    - Broker custodian through where you own the Fund
+    - Operated by professional money managers, who allocate the fund's assets and attempt to produce capital gains or income
+      for the fund's investors. A mutual fund's portfolio is structured and maintained to match the investment objectives stated
+      in its prospectus. Most mutual funds are part of larger investment companies such as Fidelity Investments, Vanguard,
+      T. Rowe Price, and Oppenheimer. A mutual fund has a fund manager, sometimes called its investment adviser, who is legally
+      obligated to work in the best interest of mutual fund shareholders.
+
+How buy funds:
+    - personaly: you get directly from Fund Company
+    - buy through broker
+
+Mutual Funds:
+    - pro: diversification
+    - pro: professionals manage it for you
+    - con: fees
+
+Research links:
+https://youtu.be/dhOLnHDmijs
+https://youtu.be/vGcOGYkttI4
+https://youtu.be/d0EBJnZkReI
+https://youtu.be/5L_zQGPNXOk
+https://youtu.be/4ND2Ulif0ls
+https://www.investopedia.com/terms/m/mutual-fund-yield.asp
+https://www.investopedia.com/ask/answers/102715/do-mutual-funds-pay-dividends-or-interest.asp
+https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-1
+https://www.nerdwallet.com/article/investing/types-of-mutual-funds
+https://www.investopedia.com/terms/m/mutualfund.asp
+https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/characteristics-mutual-funds-exchange-traded-funds
+https://youtu.be/ROAGmAgoMAE
+https://youtu.be/eU45evtcc90
+https://youtu.be/WxoNEtQSxd4
+https://www.advisorkhoj.com/mutual-funds-research/mutual-fund-portfolio-overlap
+https://www.thefundoo.com/Tools/PortfolioOverlap
+https://freefincal.com/mutual-fund-portfolio-overlap-tool/
+https://youtu.be/-enjklxKEio
+https://thebusinessprofessor.com/en_US/investments-trading-financial-markets/total-expense-ratio-definition
+https://www.anevis-solutions.com/2019/besides-shorting-can-cause-weighting-assets-allocation-statistic-get-negative/
+https://youtu.be/HrKF5RXc9kE
+https://traders-paradise.com/magazine/2020/04/negative-numbers-in-asset-allocation/
+https://www.investopedia.com/terms/l/long-shortequity.asp
+https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/stock-purchases-and-sales-long-and

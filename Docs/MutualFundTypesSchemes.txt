@@ -1,0 +1,28 @@
+https://www.nirmalbang.com/knowledge-center/categories-of-mutual-fund.html
+
+Mutual Fund:
+    - Equity Scheme Categories:
+        - invests in equity and equity-related instruments
+        - large-, mid- and small-cap stocks
+        - Investments in particular sectors, example, banking, FMCG, pharma, technology, infrastructure,
+          automobile or entertainment, and so on. Such types of mutual funds are known as sectoral/ thematic funds.
+    - Hybrid Fund:
+        - Hybrid schemes are a combination of Equity and Debt.
+        - Equity Allocation decides the nature of hybrid schemes, i.e. Aggressive Hybrid Funds or debt-oriented
+          hybrid funds also known as Conservative Hybrid Funds.
+        - Equity-oriented funds have at least 65% exposure to equities and balance-to-debt securities;
+          whereas debt-oriented hybrid funds have at least 75% exposure to debt instruments.
+    - Debt Scheme Categories:
+        - Invest in money market securities and/ or debt market securities
+        - Money market securities include Commercial Papers (CPs), Certificates of Deposits (CDs), Treasury Bills (TBs), etc
+        - Debt market securities include Government Securities (G-Secs), PSU bonds, Non-convertible Debentures (NCDs), etc
+        - Debt funds can be further categorized into sub-categories depending on the nature of the investment and their
+          respective maturity period
+    - Sollution Oriented Schemes:
+        - Retirement Fund
+            - Schemes will be open-ended with a minimum lock-in period of 5 years or till the retirement age, whichever
+              is earlier
+        - Children’s Fund
+            - Schemes will be open-ended with a minimum lock-in period of 5 years or till the child attains the age of
+            - majority, whichever is earlier
+    - Other Schemes:

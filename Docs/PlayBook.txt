@@ -1,0 +1,72 @@
+- Get BASE Data:
+    - script:   BASEDataScrape.py
+    - datafile: BASE_DATA_SCRAPED.pickle
+    - data:
+        - {'CISOs': {CISO: Name}}
+        - {'MICs': {MIC: {
+            'Name': Name,
+            'MarketCategory': MarketCategory,
+            'Mic': MIC,
+            'Country': Exchange Country,
+            'OperatingMic': MIC of company controling exchange,
+            'Acronym': ?,
+            'Status': ?,
+            'MicCodeType': ?,
+            'CreationDate': Date,
+            'LastChange': Date,
+            'WebSite': HTTP,
+            'Comment': Info,
+            }}}
+        - {'MICToCISO': {MIC: set(CISO)}}
+        - {'CISOToMIC': {ISO: set(MIC)}}
+    - playbook:
+        - Get CISOs and Name
+        - Get MICs and Name
+        - Get MICs data
+        - Create MICToCISO and CISOToMIC links
+
+- Get MF_DATA:
+    - script:   BASEDataScrape.py
+    - datafile: BASE_DATA_SCRAPED.pickle
+    - data:
+        - same as BASE data
+        - {'MarketWatchQuotes': {
+            'Symbol': Fund symbol
+            'MIC': Fund MIC
+            'Country': Fund Country
+            'Name': Fund name
+            'Sector': Fund sector
+            }}
+        - {'MorningStarQuoteData': {
+            'ScrapeTag': Scraping Time Stamp
+            'FundType': 
+            'Rating': MorningStar Rating
+            'Nav': 
+            '1-dayReturn': 
+            'TotalAssets': 
+            'AdjExpenseRatio': Adjusted Expense Ratio in unit %: float, [amount, unit], '—'
+            'ExpenseRatio': Expense Ratio in unit %: float, [amount, unit], '—'. Used for Data Creation
+            'FeeLevel': 
+            'LongestManagerTenure': 
+            'Category': 
+            'MinInitialInvestment': 
+            'Status': 
+            'TtmYield': 
+            'EffectiveDuration': 
+            'InvestmentStyle': 
+            'Turnover': 
+            'CreditQuality': Bond Investment Style: Credit Quality: 'Low, Medium, High / Limited, Moderate, Extensive' . Value used before the / . Used for Data Creation
+            'InterestRateSensitivity': Bond Investment Style: Investment Rate Sensitivity: 'Low, Medium, High / Limited, Moderate, Extensive' . Value used after the / . Used for Data Creation
+            'AltStyleCorrelation': 
+            'RelativeVolatility': 
+            }}
+    - playbook:
+        - Add BASE data
+        - Get MarketWatchQuotes in form SYMBOL:MIC and some data
+        - Find additional Quotes in MorningStar Search and add to MarketWatchQuotes
+        - Get MorningStar data based on quotes in MarketWatchQuotes:
+            - Remove non fund quotes and add data of found funds
+            - MorningStarQuotes has the final true Fund Quotes List
+        - Get additional Marketwatch data
+        - Get Marketwatch Holdings data
+        - Get Etrade data
