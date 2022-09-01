@@ -239,13 +239,13 @@ def quoteFilter(MSData, log=True):
     # fQuotes = mwqdNoTypes.intersection(mwqETFs)
     # fQuotes = mwqCEFs.intersection(mwqdstStocks)
     # fQuotes = mwqCEFs.intersection(mwqdstStocks)
-    fQuotes = mwqdstETFs
+    # fQuotes = mwqdstETFs
 
     # # MutualFunds
     # fQuotes = mwqdstFunds.union(mwqdstETFs).union(mwqFunds).union(mwqETFs).union(mwqCEFs)
 
-    # # Stocks
-    # fQuotes = mwqdstStocks.union(mwqdstADRs).union(mwqStocks)
+    # Stocks
+    fQuotes = mwqdstStocks.union(mwqdstADRs).union(mwqStocks).difference(mwqdFunds)
 
     # return sorted quote list
     fQuotes = list(fQuotes)
@@ -254,7 +254,7 @@ def quoteFilter(MSData, log=True):
 
 if __name__ == "__main__":
     DS.setupLogging('MSDAttributes.log', timed=False, new=True)
-    scrapedFileName = 'M_DATA_SCRAPED'
+    scrapedFileName = 'M_DATA_SCRAPED_FIXED'
     MSData = DS.getData(scrapedFileName)
 
     quotes = quoteFilter(MSData)

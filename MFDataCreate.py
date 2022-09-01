@@ -56,7 +56,6 @@ if __name__ == "__main__":
         data = {
             'MinInvestment': None,
             'Yield': None,
-            'Rating': None,
             'ETradeAvailbility': None,
             'MorningStarRating': None,
             'Expense': {

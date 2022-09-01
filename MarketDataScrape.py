@@ -28,7 +28,13 @@ def cleanUpAttributes(attributes, capitalize=True, upper=False):
     data = {}
     for attr, value in attributes.items():
         attrName = ''
-        currencies = '$£₹€¥₩'
+        # currencies = ['NT$','HK$','$','£','₹','€','¥','₩']
+        currencies = [
+            'NT$','HK$','Z$','R$','$',
+            '£','₹','€','¥','₩','৳','₺','₪','₸','kr.','kr','kn','₫','zł','₱','₦','₵','ден','дин.','КМ','₴',
+            'ج.م.\u200f','د.ا.\u200f','د.ت.\u200f','د.ك.\u200f','د.م.\u200f','ر.ع.\u200f',
+            'د.ب.\u200f','ر.ق.\u200f','د.إ.\u200f','ر.س.\u200f','د.ع.\u200f',
+            'RM','MK','USh','Sh','CFA','ZK','Ksh','Ft','Rs','Rp','S/','Bs.S','฿','රු.','лв.','CHF','Kč','R','P','c','p']
         mults = 'KMBTp'
         
         # capitalize sub parts of attribute name
@@ -75,18 +81,38 @@ def cleanUpAttributes(attributes, capitalize=True, upper=False):
                     cleanedValues.append(val)
                     continue
             
-            if len(val) > 0 and val[0] in currencies:
-                unit = val[0]
-                numtest = val.replace(val[0],'')
+            foundCurrency = None
+            for currency in currencies:
+                if currency in val:
+                    foundCurrency = currency
+                    break
+            if foundCurrency != None and attrName != 'Name' and attrName != 'Symbol':
+                unit = foundCurrency
+                numtest = val.replace(unit,'')
                 if len(numtest) > 0 and numtest[-1] in mults:
                     mult = numtest[-1]
                     numtest = numtest.replace(mult,'')
                     unit = mult + unit
                 numtest = numtest.replace(',','')
-                if numtest.replace('.','').isnumeric():
-                    val = [float(numtest), unit]
-                    cleanedValues.append(val)
-                    continue
+                numTestDigits = numtest.replace('.','')
+                if numTestDigits != '':
+                    if numTestDigits[0] == '-': numTestDigits = numTestDigits[1:]
+                    if numTestDigits.isnumeric():
+                        val = [float(numtest), unit]
+                        cleanedValues.append(val)
+                        continue
+            # if len(val) > 0 and val[0] in currencies:
+            #     unit = val[0]
+            #     numtest = val.replace(val[0],'')
+            #     if len(numtest) > 0 and numtest[-1] in mults:
+            #         mult = numtest[-1]
+            #         numtest = numtest.replace(mult,'')
+            #         unit = mult + unit
+            #     numtest = numtest.replace(',','')
+            #     if numtest.replace('.','').isnumeric():
+            #         val = [float(numtest), unit]
+            #         cleanedValues.append(val)
+            #         continue
             
             if len(val) > 0 and val[-1] in mults:
                 mult = val[-1]
@@ -293,7 +319,7 @@ def quoteDataMWBS4Proc(quote):
     symbolSplits = quote.split(':')
     symbol = symbolSplits[0]
     MIC = symbolSplits[1]
-    # https://www.marketwatch.com/investing/fund/SNX?iso=XASX
+    # https://www.marketwatch.com/investing/fund/ALSP?iso=XPLU
     fundStart = 'https://www.marketwatch.com/investing/fund'
     url = '%s/%s?iso=%s' % (fundStart, symbol, MIC)
 

@@ -218,7 +218,7 @@ class MFWindow(QMainWindow):
         minSBRatio = float(self.minSBRatio.value())
         maxSBRatio = float(self.maxSBRatio.value())
 
-        fundTypes = set()
+        # fundTypes = set()
         for i in range(self.fundTypeChecks.count()):
             widget = self.fundTypeChecks.itemAt(i).widget()
             if widget.isChecked() == True:
@@ -226,7 +226,7 @@ class MFWindow(QMainWindow):
                     fundTypes.add(None)
                 else:
                     fundTypes.add(self.fundTypes[i])
-        print(fundTypes)
+        # print(fundTypes)
 
         quotes = []
         for quote, data in self.MFData['Quotes'].items():
@@ -419,5 +419,5 @@ class MFWindow(QMainWindow):
             out += '%s,%s,%s' % (bonds, cquality, irsensitivity)
             out += '\n'
 
-        with open(CSVFileName, 'w') as f:
+        with open(CSVFileName, 'w', encoding='utf-8') as f:
             f.write(out)
