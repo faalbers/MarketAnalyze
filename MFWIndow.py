@@ -218,7 +218,7 @@ class MFWindow(QMainWindow):
         minSBRatio = float(self.minSBRatio.value())
         maxSBRatio = float(self.maxSBRatio.value())
 
-        # fundTypes = set()
+        fundTypes = set()
         for i in range(self.fundTypeChecks.count()):
             widget = self.fundTypeChecks.itemAt(i).widget()
             if widget.isChecked() == True:
