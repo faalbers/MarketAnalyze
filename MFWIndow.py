@@ -279,7 +279,7 @@ class MFWindow(QMainWindow):
     def saveCSV(self, quotes):
         CSVFileName = 'MF_ANALYZE_DATA.csv'
         out = ''
-        out += 'Symbol, Name, Type, MSRating,'
+        out += 'Symbol, Name, Family, Type, MSRating,'
         out += 'ExpenseRatio %, Yield %,'
         # out += 'MinInvestment, ETrade,'
         out += 'MinInvestment,'
@@ -299,6 +299,10 @@ class MFWindow(QMainWindow):
             name = '"%s"' % fund['Name']
             ftype = '"%s"' % fund['Type']
             marketName = '"%s"' % market['Name']
+
+            family = 'N/A'
+            if fund['Family'] != None:
+                family = '"%s"' % fund['Family']
 
             msrating = 'N/A'
             if data['MorningStarRating'] != None: msrating = data['MorningStarRating']
@@ -345,7 +349,7 @@ class MFWindow(QMainWindow):
             # # etradeAvailable = 'N/A'
             # # if data['ETradeAvailbility'] != None: etradeAvailable = '"%s"' % data['ETradeAvailbility']
 
-            out += '%s,%s,%s,%s,' % (symbol, name, ftype, msrating)
+            out += '%s,%s,%s,%s,%s,' % (symbol, name, family, ftype, msrating)
             out += '%s,%s,' % (expenseRatio, Yield)
             # # out += '%s,%s,' % (mininvest, etradeAvailable)
             out += '%s,' % (mininvest)
@@ -356,68 +360,8 @@ class MFWindow(QMainWindow):
             out += '%s' % (marketName)
             out += '\n'
 
-        with open(CSVFileName, 'w') as f:
+        with open(CSVFileName, 'w', encoding='utf-8') as f:
             f.write(out)
         
         self.doSaveCSV.setChecked(False)
     
-    def saveCSVOLD(self, quotes):
-        CSVFileName = 'MF_ANALYZE_DATA.csv'
-        out = ''
-        out += 'Symbol, Name, Country,'
-        out += 'MorningStarRating, ExpenseRatio %, MinInvestment, ETrade, Yield %,'
-        out += 'Stocks %, Cap, Style,'
-        out += 'Bonds %, CreditQuality, InterestRateSensitivity'
-        out += '\n'
-
-        for quote in quotes:
-            data = self.MFData['Quotes'][quote]
-            quoteSplit = quote.split(':')
-            symbol = quoteSplit[0]
-            market = quoteSplit[1]
-            countryCode = quoteSplit[2]
-            name = data['Name'].replace(',','')
-            
-            msrating = 'N/A'
-            if data['MorningStarRating'] != None: msrating = data['MorningStarRating']
-
-            Yield = 'N/A'
-            if data['Yield'] != None: Yield = data['Yield']
-
-            expense = 'N/A'
-            if data['ExpenseRatio'] != None: expense = data['ExpenseRatio']
-
-            mininvest = 'N/A'
-            if data['MinInvestment'] != None: mininvest = data['MinInvestment']
-
-            stocks = 'N/A'
-            cap = 'N/A'
-            style = 'N/A'
-            bonds = 'N/A'
-            cquality = 'N/A'
-            irsensitivity = 'N/A'
-
-            if data['AssetAllocation'] != None:
-                stocks = data['AssetAllocation']['Stocks']
-                bonds = data['AssetAllocation']['Bonds']
-
-            if data['StockStyle'] != None:
-                cap = data['StockStyle']['Cap']
-                style = data['StockStyle']['Style']
-            
-            if data['BondStyle'] != None:
-                cquality = data['BondStyle']['CreditQuality']
-                irsensitivity = data['BondStyle']['InterestRateSensitivity']
-            
-            # out filters
-            # if countryCode != 'US': continue
-            # if msrating == 'N/A': continue
-
-            out += '%s,%s,%s,' % (symbol, name, data['Country'])
-            out += '%s,%s,%s,%s,%s,' % (msrating, expense, mininvest, data['ETradeAvailable'], Yield)
-            out += '%s,%s,%s,' % (stocks, cap, style)
-            out += '%s,%s,%s' % (bonds, cquality, irsensitivity)
-            out += '\n'
-
-        with open(CSVFileName, 'w', encoding='utf-8') as f:
-            f.write(out)
