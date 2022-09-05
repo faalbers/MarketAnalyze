@@ -6,6 +6,7 @@ attrReplace = {
     'MorningStarQuoteData': 'SYMBOL:MIC',
     'MarketWatchQuoteData': 'SYMBOL:MIC',
     'MarketWatchHoldingsData': 'SYMBOL:MIC',
+    'ETradeQuoteData': 'SYMBOL',
     'CISOs': 'CISO',
     'MICs': 'MIC',
     'MICToCISO': 'MIC',
@@ -81,6 +82,7 @@ def keepOnlyKeys(keys, data):
     print(len(data))
 
 def quoteFilter(MSData, log=True):
+    all = set(MSData['MarketWatchQuotes'].keys())
     mwqdFunds = set()
     mwqdStocks = set()
     mwqdIndexes = set()
@@ -244,8 +246,12 @@ def quoteFilter(MSData, log=True):
     # # MutualFunds
     # fQuotes = mwqdstFunds.union(mwqdstETFs).union(mwqFunds).union(mwqETFs).union(mwqCEFs)
 
-    # Stocks
-    fQuotes = mwqdstStocks.union(mwqdstADRs).union(mwqStocks).difference(mwqdFunds)
+    # # Stocks
+    # fQuotes = mwqdstStocks.union(mwqdstADRs).union(mwqStocks).difference(mwqdFunds)
+
+    # all
+    fQuotes = all
+
 
     # return sorted quote list
     fQuotes = list(fQuotes)
@@ -254,7 +260,7 @@ def quoteFilter(MSData, log=True):
 
 if __name__ == "__main__":
     DS.setupLogging('MSDAttributes.log', timed=False, new=True)
-    scrapedFileName = 'M_DATA_SCRAPED_FIXED'
+    scrapedFileName = 'M_DATA_SCRAPED'
     MSData = DS.getData(scrapedFileName)
 
     quotes = quoteFilter(MSData)

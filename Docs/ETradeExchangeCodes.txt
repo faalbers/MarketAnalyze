@@ -1,0 +1,9 @@
+NSDQ = NASDQ = The Nasdaq Stock Market 
+NYSE = The New York Stock Exchange
+BETA = US Mutual Fund Providers
+ISE = Nasdaq International Securities Exchange
+AMEX = American Stock Exchange (now NASDAQ)
+BATS = Bats Global Markets
+US = US Market ?
+OTHER = ?
+PK = PK behind a stock symbol simply means the stock in question is traded on the pink sheets or the Pink Sheets Electronic Quotation service

@@ -1,7 +1,8 @@
 import DataScrape as DS
 from bs4 import BeautifulSoup
-import logging
+import logging, pprint
 from datetime import datetime
+import ETradeAPI as ET
 
 # --- TOOLS ---
 
@@ -283,6 +284,10 @@ def quoteDataMSBS4Proc(quote_type):
     morningStars = soup.find('span', class_='mdc-security-header__star-rating')
     if morningStars != None:
         data['Rating'] = int(morningStars['title'].split()[0])
+
+    name = soup.find('div', {'class': 'mdc-security-header__inner'})
+    if name != None:
+        data['Name'] = name.text.strip().split('\n')[0].strip()
 
     # Only FUND type pages have accessible non JavaScript data, sadly
     if stype == 'FUND':
@@ -628,6 +633,12 @@ def getQuoteDataMSBS4(dataFileName, seconds=0, minutes=0, hours=0, days=0):
     msTodoQuotes = set(quotesNeedScrape(MData, dataName, seconds=seconds, minutes=minutes, hours=hours, days=days))
     toDoQuotes = mwQuotes.difference(msQuotes.difference(msTodoQuotes))
 
+    # toDoQuotes = ['VITAX:XNAS']
+    # toDoQuotes = ['AAPL:XNAS']
+    # toDoQuotes = ['NBI:XNAS']
+    # toDoQuotes = ['SHOP:XBUE']
+    # toDoQuotes = ['BANX:XNAS']
+
     quotes = []
     for quote in toDoQuotes:
         quotes.append([quote, MData['MarketWatchQuotes'][quote]['Type']])
@@ -733,6 +744,98 @@ def getHoldingsDataMWBS4(dataFileName, seconds=0, minutes=0, hours=0, days=0):
         
         sTotal = sTotal - len(block)
 
+def getSymbolDataETAPI(dataFileName, seconds=0, minutes=0, hours=0, days=0):
+    logging.info('Retrieving quote data in ETrade')
+    MData = DS.getData(dataFileName)
+    dataName = 'ETradeQuoteData'
+    if not 'MarketWatchQuotes' in MData:
+        logging.info('No MarketWatchQuotes found in data !')
+        return
+    if not dataName in MData: MData[dataName] = {}
+
+    # update symbols that are in MarketWatchQuotes and that need to be updated
+    quotes = set(MData['MarketWatchQuotes'].keys())
+    allSymbols = set()
+    for quote in quotes:
+        splits = quote.split(':')
+        symbol = splits[0]
+        allSymbols.add(symbol)
+    symbolsNotNeedScrape = set(quotesNeedScrape(MData, dataName, needScrape=False, seconds=seconds, minutes=minutes, hours=hours, days=days))
+    symbols = list(allSymbols.difference(symbolsNotNeedScrape))
+
+    if len(symbols) == 0: return
+
+    session = ET.getSession()
+
+    sTotal = len(symbols)
+    for block in DS.makeMultiBlocks(symbols, 20):
+        logging.info('Symbols to scrape data with ETrade API: %s' % sTotal)
+        results = ET.multiQuotes(block, session)
+
+        sIndex = 0
+        for data in results:
+            symbol = block[sIndex]
+            if not symbol in MData[dataName]: MData[dataName][symbol] = {}
+            MData[dataName][symbol]['ScrapeTag'] = datetime.now()
+            for attr, value in data.items():
+                MData[dataName][symbol][attr] = value
+            sIndex += 1
+    
+        if not DS.saveData(MData, dataFileName):
+            logging.info('%s: Stop saving data and exit program' % dataFileName)
+            ET.endSession(session)
+            exit(0)
+        
+        sTotal = sTotal - len(block)
+
+    # logging.info(pprint.pformat(MData[dataName]))
+
+    ET.endSession(session)
+
+def getSymbolMFDataETAPI(dataFileName, seconds=0, minutes=0, hours=0, days=0):
+    logging.info('Retrieving quote data in ETrade')
+    MData = DS.getData(dataFileName)
+    dataName = 'ETradeQuoteData'
+    if not 'ETradeQuoteData' in MData:
+        logging.info('No ETradeQuoteData found in data !')
+        return
+    if not dataName in MData: MData[dataName] = {}
+
+    # update Mutual Fund symbols that are in ETradeQuoteData and that need to be updated
+    todoSymbols = quotesNeedScrape(MData, dataName, seconds=seconds, minutes=minutes, hours=hours, days=days)
+    symbols = []
+    for symbol in todoSymbols:
+        if 'MutualFund' in MData['ETradeQuoteData'][symbol]:
+            symbols.append(symbol)
+    print(len(symbols))
+
+    session = ET.getSession()
+
+    sTotal = len(symbols)
+    for block in DS.makeMultiBlocks(symbols, 20):
+        logging.info('Mutual Fund Symbols to scrape data with ETrade API: %s' % sTotal)
+        results = ET.multiQuotes(block, session, detailFlag='MF_DETAIL')
+
+        sIndex = 0
+        for data in results:
+            symbol = block[sIndex]
+            if not symbol in MData[dataName]: MData[dataName][symbol] = {}
+            MData[dataName][symbol]['ScrapeTag'] = datetime.now()
+            for attr, value in data.items():
+                MData[dataName][symbol][attr] = value
+            sIndex += 1
+    
+        if not DS.saveData(MData, dataFileName):
+            logging.info('%s: Stop saving data and exit program' % dataFileName)
+            ET.endSession(session)
+            exit(0)
+        
+        sTotal = sTotal - len(block)
+
+    # logging.info(pprint.pformat(MData[dataName]))
+
+    ET.endSession(session)
+
 if __name__ == "__main__":
     DS.setupLogging('MarketDataScrape.log', timed=True, new=False)
     scrapedFileName = 'M_DATA_SCRAPED'
@@ -760,3 +863,10 @@ if __name__ == "__main__":
     # # get quote data from MarketWatch
     # # 30600 quotes = 06:54:42
     # getHoldingsDataMWBS4(scrapedFileName, days=historyUpdateDays)
+
+    # # get holdings data from ETrade API
+    # getSymbolDataETAPI(scrapedFileName, days=historyUpdateDays)
+    
+    # # get holdings data from ETrade API
+    # # 20411 quotes = 01:53:00
+    # getSymbolMFDataETAPI(scrapedFileName, days=historyUpdateDays)
