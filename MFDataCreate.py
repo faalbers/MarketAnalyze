@@ -1,6 +1,18 @@
 import DataScrape as DS
 import logging
 
+ETexchToOpMIC = {
+    '': [],
+    'NSDQ': ['XNAS', 'XNYS'],
+    'NYSE': ['XNYS', 'XNAS', 'XCBO'],
+    'AMEX': ['XNYS'],
+    'PK': ['FINR', 'OTCM'],
+    'BATS': ['XCBO', 'XNYS'],
+    'US': ['FINR'],
+    'ISE': [],
+    'OTHER': [],
+}
+
 if __name__ == "__main__":
     # scrapedFileName = 'M_DATA_SCRAPED'
     scrapedFileName = 'M_DATA_SCRAPED'
@@ -15,28 +27,50 @@ if __name__ == "__main__":
 
     # get all funds quotes and sort them
     quotes = set()
-    for quote, data in MSData['MarketWatchQuoteData'].items():
-        if 'SubType' in data:
-            if data['SubType'] == 'Mutual Funds' or data['SubType'] == 'ETFs':
-                quotes.add(quote)
+    mwq_FUND = set()
     for quote, data in MSData['MarketWatchQuotes'].items():
-        if data['Type'] == 'FUND' or data['Type'] == 'ETF' or data['Type'] == 'CEF':
-            quotes.add(quote)
+        if data['Type'] == 'FUND': mwq_FUND.add(quote)
+        elif data['Type'] == 'ETF': mwq_FUND.add(quote)
+    
+    mwqd_fund = set()
+    for quote, data in MSData['MarketWatchQuoteData'].items():
+        if 'Type' in data and data['Type'] == 'fund': mwqd_fund.add(quote)
+    
+    quotes = mwq_FUND.union(mwqd_fund)
+    print(len(quotes))
+
+    # get quotes with same symbol to find actual quote for ETrade data
+    # add ETSymbol to MarketWatchQuotes if found
+    etradeQuotes = {}
+    for quote in quotes:
+        symbol = quote.split(':')[0]
+        data = MSData['MarketWatchQuotes'][quote]
+        if not symbol in etradeQuotes: etradeQuotes[symbol] = set()
+        etradeQuotes[symbol].add(quote)
+    for symbol, symbolQuotes in etradeQuotes.items():
+        etData = MSData['ETradeQuoteData'][symbol]
+        for quote in symbolQuotes:
+            MSData['MarketWatchQuotes'][quote]['ETSymbol'] = None
+            if 'All' in etData:
+                exchangeCode = etData['All']['primaryExchange']
+                MIC = quote.split(':')[1]
+                if MIC in MSData['MICs']:
+                    operatingMIC = MSData['MICs'][MIC]['OperatingMic']
+                    if operatingMIC in ETexchToOpMIC[exchangeCode]:
+                        MSData['MarketWatchQuotes'][quote]['ETSymbol'] = symbol
+            elif 'MutualFund' in etData:
+                MIC = quote.split(':')[1]
+                if MIC in MSData['MICToCISO']:
+                    CISO = list(MSData['MICToCISO'][MIC])[0]
+                    if CISO == 'US':
+                        MSData['MarketWatchQuotes'][quote]['ETSymbol'] = symbol
+    
     quotes = list(quotes)
     quotes.sort()
     
     values = set()
     symbolVals= set()
     symbolCounts = {}
-    ETexchToOpMIC = {
-        '': [],
-        'NSDQ': ['XNAS', 'XNYS'],
-        'NYSE': ['XNYS', 'XNAS', 'XCBO'],
-        'AMEX': ['XNYS'],
-        'PK': ['FINR', 'OTCM'],
-        'BATS': ['XCBO', 'XNYS'],
-        'OTHER': [],
-    }
     for quote in quotes:
         quoteSplits = quote.split(':')
 
@@ -55,8 +89,13 @@ if __name__ == "__main__":
             'Country': None,
             'CISO': None,
             'Type': None,
-            'ETType': None,
-            'ETSubType': None,
+            'Types': {
+                'MWQ_Type': None,
+                'MWQD_Type': None,
+                'MWQD_SubType': None,
+                'ETQD_Type': None,
+                'ETQD_SubType': None,
+            },
         }
         MFData['Quotes'][quote]['Fund'] = fund
 
@@ -71,8 +110,8 @@ if __name__ == "__main__":
         data = {
             'MinInvestment': None,
             'Yield': None,
-            'ETradeAvailbility': None,
             'MorningStarRating': None,
+            'ETradeAvailbility': None,
             'Expense': {
                 'NetExpenseRatio': None,
                 'TotalExpenseRatio': None,
@@ -100,26 +139,35 @@ if __name__ == "__main__":
 
 
         fund['Symbol'] = symbol
-        fund['Name'] = MSData['MarketWatchQuotes'][quote]['Name']
-        for fCISO, fcountry in MSData['CISOs'].items():
-            if 'Country' in MSData['MarketWatchQuotes'][quote]:
-                if fcountry.startswith(MSData['MarketWatchQuotes'][quote]['Country']):
-                    fund['Country'] = fcountry
-                    fund['CISO'] = fCISO
-
         market['MIC'] = MIC
         market['Name'] = MSData['MICs'][MIC]['Name']
         market['CISO'] = list(MSData['MICToCISO'][MIC])[0]
         market['Country'] = MSData['CISOs'][market['CISO']]
 
+        # handle MarketWatchQuotes
+        fund['Name'] = MSData['MarketWatchQuotes'][quote]['Name']
+        qdata = MSData['MarketWatchQuotes'][quote]
+        fund['Types']['MWQ_Type'] = qdata['Type']
+        for fCISO, fcountry in MSData['CISOs'].items():
+            if 'Country' in qdata:
+                if fcountry.startswith(qdata['Country']):
+                    fund['Country'] = fcountry
+                    fund['CISO'] = fCISO
+
         # handle MarketWatchQuoteData
         qdata = MSData['MarketWatchQuoteData'][quote]
         try:
-            if qdata['SubType'] == 'Mutual Funds':
-                fund['Type'] = 'MutualFund'
-            elif qdata['SubType'] == 'ETFs':
-                fund['Type'] = 'ETF'
+            fund['Types']['MWQD_Type'] = qdata['Type']
         except: pass
+        try:
+            fund['Types']['MWQD_SubType'] = qdata['SubType']
+        except: pass
+        # try:
+        #     if qdata['SubType'] == 'Mutual Funds':
+        #         fund['Type'] = 'MutualFund'
+        #     elif qdata['SubType'] == 'ETFs':
+        #         fund['Type'] = 'ETF'
+        # except: pass
 
         try:
             data['MinInvestment'] = qdata['MinInvestment']['Standard(taxable)']
@@ -163,15 +211,6 @@ if __name__ == "__main__":
                 data['Expense']['AdjExpenseRatio'] = [0.0 , '%']
             else:
                 data['Expense']['AdjExpenseRatio'] = qdata['AdjExpenseRatio']
-        except: pass
-
-        # handle MarketWatchQuoteData
-        qdata = MSData['MarketWatchQuotes'][quote]
-        try:
-            if qdata['Type'] == 'ETF':
-                fund['Type'] = 'ETF'
-            elif qdata['Type'] == 'CEF':
-                fund['Type'] = 'CEF'
         except: pass
 
         # # get name and deduct strategies from name
@@ -233,35 +272,31 @@ if __name__ == "__main__":
                 if total != 0.0:
                     data['AssetAllocation']['StocksBondsRatio'] = [(stocksAmount / total) * 100.0, '%']
 
-        # handle ERade data
-        if symbol in MSData['ETradeQuoteData']:
+        # handle ETrade data
+        if MSData['MarketWatchQuotes'][quote]['ETSymbol'] != None:
+            symbol = MSData['MarketWatchQuotes'][quote]['ETSymbol']
             symbolData = MSData['ETradeQuoteData'][symbol]
-            if 'All' in symbolData:
-                exchangeCode = symbolData['All']['primaryExchange']
-                operatingMIC = MSData['MICs'][MIC]['OperatingMic']
-                if operatingMIC in ETexchToOpMIC[exchangeCode]:
-                    fund['ETType'] = symbolData['Product']['securityType']
-                    if 'securitySubType' in symbolData['Product']:
-                        fund['ETSubType'] = symbolData['Product']['securitySubType']
-                    data['ETradeAvailbility'] = 'Available'
-                    # values.add(symbolData['All']['open'])
-            elif 'MutualFund' in symbolData:
-                CISO = list(MSData['MICToCISO'][MIC])[0]
-                if CISO == 'US':
-                    fund['ETType'] = symbolData['Product']['securityType']
-                    data['ETradeAvailbility'] = symbolData['MutualFund']['availability'].split()[0]
-                    fund['Family'] = symbolData['MutualFund']['fundFamily']
-                    # values.add(symbolData['MutualFund']['availability'])
+            if 'MutualFund' in symbolData:
+                fund['Family'] = symbolData['MutualFund']['fundFamily']
+                if symbolData['MutualFund']['availability'] == 'Open to New Buy and Sell':
+                    data['ETradeAvailbility'] = 'Open'
+                else:
+                    data['ETradeAvailbility'] = 'Closed'
+            if 'Product' in symbolData:
+                fund['Types']['ETQD_Type'] = symbolData['Product']['securityType']
+                if 'securitySubType' in symbolData['Product']:
+                    fund['Types']['ETQD_SubType'] = symbolData['Product']['securitySubType']
 
-        # # etrade data
-        # if 'ETradeQuoteData' in MSData:
-        #     qdata = MSData['ETradeQuoteData'][quote]
-        #     if 'MutualFund' in qdata:
-        #         if qdata['MutualFund']['availability'] == 'Open to New Buy and Sell':
-        #             data['ETradeAvailbility'] = 'Open'
-        #         else:
-        #             data['ETradeAvailbility'] = 'Close'
-
+        # create main type
+        if fund['Types']['MWQ_Type'] == 'ETF' or fund['Types']['MWQD_SubType'] == 'ETFs' or fund['Types']['ETQD_SubType'] == 'ETF':
+            fund['Type'] = 'Exchange Traded Fund'
+        elif fund['Types']['MWQ_Type'] == 'CEF':
+            fund['Type'] = 'Closed End Fund'
+        elif fund['Types']['ETQD_Type'] == 'MMF':
+            fund['Type'] = 'Money Market Fund'
+        elif fund['Types']['MWQ_Type'] == 'FUND' or fund['Types']['MWQD_SubType'] == 'Mutual Funds' or fund['Types']['ETQD_Type'] == 'MF':
+            fund['Type'] = 'Mutual Fund'
+    
     print(values)
 
     # log quotes
