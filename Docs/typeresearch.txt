@@ -1,0 +1,25 @@
+Finding stocks:
+MarketWatchQuotes:Type:STOCK and MarketWatchQuoteData:Type:stock
++ MarketWatchQuotes:Type:STOCK and MarketWatchQuoteData:Type:NoType
++ MarketWatchQuotes:Type:None and MarketWatchQuoteData:Type:stock
+Find out what is:
+MarketWatchQuotes:Type:STOCK and MarketWatchQuoteData:Type:fund 388
+
+Finding Funds:
+MarketWatchQuotes:Type:FUND and MarketWatchQuoteData:Type:fund
++ MarketWatchQuotes:Type:ETF and MarketWatchQuoteData:Type:fund
++ MarketWatchQuotes:Type:None and MarketWatchQuoteData:Type:fund
+Find out what is:
+MarketWatchQuotes:Type:FUND and MarketWatchQuoteData:Type:NoType 10
+MarketWatchQuotes:Type:STOCK and MarketWatchQuoteData:Type:fund 388
+MarketWatchQuotes:Type:ETF and MarketWatchQuoteData:Type:NoType 189
+MarketWatchQuotes:Type:CEF and MarketWatchQuoteData:Type:fund 894
+
+Sub Types stocks: MarketWatchQuoteData:Type:stock
+MarketWatchQuoteData:SubType:Stocks
+MarketWatchQuoteData:SubType:ADRs
+
+Sub Types funds: MarketWatchQuoteData:Type:fund
+MarketWatchQuoteData:SubType:Mutual Funds
+MarketWatchQuoteData:SubType:ETFs
+
