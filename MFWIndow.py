@@ -71,11 +71,18 @@ class MFWindow(QMainWindow):
             # checkBox.stateChanged.connect(self.countriesChanged)
             self.fundTypeChecks.addWidget(checkBox)
         self.fundTypeContents.setLayout(self.fundTypeChecks)
-        # self.selAllCountries.clicked.connect(self.checkAllCountries)
-        # self.unSelAllCountries.clicked.connect(self.uncheckAllCountries)
-        # self.showAllCountries.clicked.connect(self.allCountriesClick)
+        self.selAllFundType.clicked.connect(self.checkAllFundType)
+        self.unSelAllFundType.clicked.connect(self.uncheckAllFundType)
         # # self.updateQuotes()
 
+    def checkAllFundType(self):
+        for i in range(self.fundTypeChecks.count()):
+            self.fundTypeChecks.itemAt(i).widget().setChecked(True)
+    
+    def uncheckAllFundType(self):
+        for i in range(self.fundTypeChecks.count()):
+            self.fundTypeChecks.itemAt(i).widget().setChecked(False)
+    
     def allFundTypes(self):
         self.fundTypes = list(self.MFData['FundTypes'])
         self.fundTypes.sort()
