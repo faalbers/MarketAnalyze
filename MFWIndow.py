@@ -243,6 +243,8 @@ class MFWindow(QMainWindow):
             
             if not data['Fund']['Type'] in fundTypes: continue
 
+            if self.etradeOpen.isChecked() and data['Data']['ETradeAvailbility'] != 'Open': continue
+
             if self.bondsStocksCheck.isChecked():
                 sbRatio = data['Data']['AssetAllocation']['StocksBondsRatio']
                 if sbRatio == None: continue
@@ -294,7 +296,7 @@ class MFWindow(QMainWindow):
         # out += 'Bonds %, CreditQuality, InterestRateSensitivity,'
         out += 'Stocks %, Bonds %, S/B Ratio %,'
         out += 'Cap, Style, CreditQuality, InterestRateSensitivity,'
-        out += 'Market'
+        out += 'Market, ETrade'
         out += '\n'
 
         for quote in quotes:
@@ -306,6 +308,7 @@ class MFWindow(QMainWindow):
             name = '"%s"' % fund['Name']
             ftype = '"%s"' % fund['Type']
             marketName = '"%s"' % market['Name']
+            etrade = data['ETradeAvailbility']
 
             family = 'N/A'
             if fund['Family'] != None:
@@ -364,7 +367,7 @@ class MFWindow(QMainWindow):
             # out += '%s,%s,%s,' % (bonds, cquality, irsensitivity)
             out += '%s,%s,%s,' % (stocks, bonds, sbratio)
             out += '%s,%s,%s,%s,' % (cap, style, cquality, irsensitivity)
-            out += '%s' % (marketName)
+            out += '%s,%s' % (marketName, etrade)
             out += '\n'
 
         with open(CSVFileName, 'w', encoding='utf-8') as f:
