@@ -219,6 +219,21 @@ def getMICDataBS4(dataFileName, seconds=0, minutes=0, hours=0, days=0):
         
         sTotal = sTotal - len(block)
 
+    # Ad more
+    BData['MICs']['GREY'] = {
+        'Acronym': '---',
+        'Comment': '---',
+        'Country': 'US - United States of America',
+        'CreationDate': '---',
+        'LastChange': '---',
+        'MarketCategory': 'Not Specified (NSPD)',
+        'Mic': 'GREY',
+        'MicCodeType': 'Market segment MIC',
+        'Name': 'OTC Pink Market Grey Market',
+        'OperatingMic': 'OTCM',
+        'Status': None,
+        'WebSite': None}
+
     if not DS.saveData(BData, dataFileName):
         logging.info('%s: Stop saving data and exit program' % dataFileName)
         exit(0)
