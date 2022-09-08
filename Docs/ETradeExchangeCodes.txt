@@ -7,3 +7,5 @@ BATS = Bats Global Markets
 US = US Market ?
 OTHER = ?
 PK = PK behind a stock symbol simply means the stock in question is traded on the pink sheets or the Pink Sheets Electronic Quotation service
+https://www.investopedia.com/articles/fundamental-analysis/08/pink-sheets-ottcb.asp
+PK = Pink Sheet = GREY = Gray Market
