@@ -1,5 +1,18 @@
+from pprint import pprint
 import DataScrape as DS
-import logging
+import logging, pprint
+
+ETexchToOpMIC = {
+    '': [],
+    'NSDQ': ['XNAS', 'XNYS'],
+    'NYSE': ['XNYS', 'XNAS', 'XCBO'],
+    'AMEX': ['XNYS'],
+    'PK': ['FINR', 'OTCM'],
+    'BATS': ['XCBO', 'XNYS'],
+    'US': ['FINR'],
+    'ISE': [],
+    'OTHER': [],
+}
 
 if __name__ == "__main__":
     scrapedFileName = 'M_DATA_SCRAPED'
@@ -13,19 +26,42 @@ if __name__ == "__main__":
     STData['Quotes'] = {}
 
     # get all stock quotes and sort them
-    quotes = set()
-    for quote, data in MSData['MarketWatchQuoteData'].items():
-        if 'SubType' in data:
-            if data['SubType'] == 'Stocks' or data['SubType'] == 'ADRs':
-                quotes.add(quote)
+    mwq_STOCK = set()
     for quote, data in MSData['MarketWatchQuotes'].items():
-        if data['Type'] == 'STOCK':
-            if 'Type' in MSData['MarketWatchQuoteData'][quote] and MSData['MarketWatchQuoteData'][quote]['Type'] == 'fund':
-                continue
-            quotes.add(quote)
-    quotes = list(quotes)
+        if data['Type'] == 'STOCK': mwq_STOCK.add(quote)
+    mwqd_stock = set()
+    for quote, data in MSData['MarketWatchQuoteData'].items():
+        if 'Type' in data and data['Type'] == 'stock': mwqd_stock.add(quote)
+    quotes = list(mwq_STOCK.union(mwqd_stock))
     quotes.sort()
-    
+    print(len(quotes))
+
+    # get quotes with same symbol to find actual quote for ETrade data
+    # add ETSymbol to MarketWatchQuotes if found
+    etradeQuotes = {}
+    for quote in quotes:
+        symbol = quote.split(':')[0]
+        data = MSData['MarketWatchQuotes'][quote]
+        if not symbol in etradeQuotes: etradeQuotes[symbol] = set()
+        etradeQuotes[symbol].add(quote)
+    for symbol, symbolQuotes in etradeQuotes.items():
+        etData = MSData['ETradeQuoteData'][symbol]
+        for quote in symbolQuotes:
+            MSData['MarketWatchQuotes'][quote]['ETSymbol'] = None
+            if 'All' in etData:
+                exchangeCode = etData['All']['primaryExchange']
+                MIC = quote.split(':')[1]
+                if MIC in MSData['MICs']:
+                    operatingMIC = MSData['MICs'][MIC]['OperatingMic']
+                    if operatingMIC in ETexchToOpMIC[exchangeCode]:
+                        MSData['MarketWatchQuotes'][quote]['ETSymbol'] = symbol
+            elif 'MutualFund' in etData:
+                MIC = quote.split(':')[1]
+                if MIC in MSData['MICToCISO']:
+                    CISO = list(MSData['MICToCISO'][MIC])[0]
+                    if CISO == 'US':
+                        MSData['MarketWatchQuotes'][quote]['ETSymbol'] = symbol
+
     values = set()
     for quote in quotes:
         quoteSplits = quote.split(':')
@@ -89,7 +125,8 @@ if __name__ == "__main__":
         # handle MarketWatchQuoteData
         qdata = MSData['MarketWatchQuoteData'][quote]
         try:
-            data['Type'] = qdata['SubType']
+            if not qdata['SubType'] in ['Mutual Funds', 'ETFs', None]:
+                stock['Type'] = qdata['SubType'][:-1]
         except: pass
         try:
             data['Yield'] = qdata['KeyData']['Yield']
@@ -163,15 +200,21 @@ if __name__ == "__main__":
         # if 'BALANCED' in data['Name'].upper() and 'RISK' in data['Name'].upper():
         #     data['Strategies'].add('BALANCEDRISK')
 
-        # # etrade data
-        # if 'ETradeQuoteData' in MSData:
-        #     qdata = MSData['ETradeQuoteData'][quote]
-        #     if 'MutualFund' in qdata:
-        #         if qdata['MutualFund']['availability'] == 'Open to New Buy and Sell':
-        #             data['ETradeAvailbility'] = 'Open'
-        #         else:
-        #             data['ETradeAvailbility'] = 'Close'
-
+        # etrade data
+        if MSData['MarketWatchQuotes'][quote]['ETSymbol'] != None:
+            symbol = MSData['MarketWatchQuotes'][quote]['ETSymbol']
+            symbolData = MSData['ETradeQuoteData'][symbol]
+            if 'Product' in symbolData:
+                if 'securitySubType' in symbolData['Product']:
+                    stock['Type'] = symbolData['Product']['securitySubType']
+        
+        # give type full names
+        if stock['Type'] == 'REIT':
+            stock['Type'] ='Real Estate Investment Trust'
+        elif stock['Type'] == 'UTS':
+            stock['Type'] ='United Trading Session Registrable Security'
+        elif stock['Type'] == 'ADR':
+            stock['Type'] ='American Depositary Receipts'
     print(values)
 
     # log quotes

@@ -15,6 +15,7 @@ class STWindow(QMainWindow):
         self.STData['CountryToMarkets'] = {}
         self.STData['MarketToCountries'] = {}
         self.STData['Sectors'] = set()
+        self.STData['Types'] = set()
         for quote, data in self.STData['Quotes'].items():
             if not data['Market']['Country'] in self.STData['CountryToMarkets']:
                 self.STData['CountryToMarkets'][data['Market']['Country']] = set()
@@ -29,12 +30,19 @@ class STWindow(QMainWindow):
             else:
                 self.STData['Sectors'].add(data['Stock']['Sector'])
         
+            if data['Stock']['Type'] == None:
+                self.STData['Types'].add('N/A')
+            else:
+                self.STData['Types'].add(data['Stock']['Type'])
+        
         self.countryChecks = QVBoxLayout()
         self.marketChecks = QVBoxLayout()
         self.sectorChecks = QVBoxLayout()
+        self.typeChecks = QVBoxLayout()
         self.allCountries()
         self.allMarkets()
         self.allSectors()
+        self.allTypes()
 
         self.makeData.clicked.connect(self.updateQuotes)
 
@@ -63,6 +71,32 @@ class STWindow(QMainWindow):
         self.sectors = list(self.STData['Sectors'])
         self.sectors.sort()
         self.buildSectorsCheckList()
+
+    def buildTypesCheckList(self):
+        for i in reversed(range(self.typeChecks.count())): 
+            self.typeChecks.itemAt(i).widget().setParent(None)
+        for type in self.types:
+            checkBox = QCheckBox(type)
+            checkBox.setChecked(True)
+            # checkBox.stateChanged.connect(self.countriesChanged)
+            self.typeChecks.addWidget(checkBox)
+        self.typeContents.setLayout(self.typeChecks)
+        self.selAllTypes.clicked.connect(self.checkAllTypes)
+        self.unSelAllTypes.clicked.connect(self.uncheckAllTypes)
+        # # self.updateQuotes()
+
+    def checkAllTypes(self):
+        for i in range(self.typeChecks.count()):
+            self.typeChecks.itemAt(i).widget().setChecked(True)
+    
+    def uncheckAllTypes(self):
+        for i in range(self.typeChecks.count()):
+            self.typeChecks.itemAt(i).widget().setChecked(False)
+
+    def allTypes(self):
+        self.types = list(self.STData['Types'])
+        self.types.sort()
+        self.buildTypesCheckList()
 
     def buildCountriesCheckList(self):
         for i in reversed(range(self.countryChecks.count())): 
@@ -164,11 +198,22 @@ class STWindow(QMainWindow):
                 else:
                     sectors.add(self.sectors[i])
 
+        types = set()
+        for i in range(self.typeChecks.count()):
+            widget = self.typeChecks.itemAt(i).widget()
+            if widget.isChecked() == True:
+                if self.types[i] == 'N/A':
+                    types.add(None)
+                else:
+                    types.add(self.types[i])
+
         quotes = []
         for quote, data in self.STData['Quotes'].items():
             if not data['Market']['Name'] in marketNames: continue
 
             if not data['Stock']['Sector'] in sectors: continue
+            
+            if not data['Stock']['Type'] in types: continue
 
             if self.yieldCheck.isChecked():
                 if data['Data']['Yield'] == None: continue
@@ -219,7 +264,7 @@ class STWindow(QMainWindow):
     def saveCSV(self, quotes):
         CSVFileName = 'ST_ANALYZE_DATA.csv'
         out = ''
-        out += 'Symbol, Name, Sector,'
+        out += 'Symbol, Name, Type, Sector,'
         out += 'Yield %, P/ERatio,'
         out += 'EPS, Cur,'
         out += 'Dividend, Cur, DivDate,'
@@ -236,6 +281,9 @@ class STWindow(QMainWindow):
             symbol = '"%s"' % stock['Symbol']
             name = '"%s"' % stock['Name']
             marketName = '"%s"' % market['Name']
+
+            type = 'N/A'
+            if stock['Type'] != None: type = stock['Type']
 
             sector = 'N/A'
             if stock['Sector'] != None: sector = stock['Sector']
@@ -279,7 +327,7 @@ class STWindow(QMainWindow):
             p1Year = 'N/A'
             if data['Performance']['1Year'] != None: p1Year = data['Performance']['1Year'][0]
 
-            out += '%s,%s,%s,' % (symbol, name, sector)
+            out += '%s,%s,%s,%s,' % (symbol, name, type, sector)
             out += '%s,%s,' % (Yield, PERatio)
             out += '%s,%s,' % (EPS, EPSCurrency)
             out += '%s,%s,"%s",' % (dividend, dividendCurrency, dividendDate)
