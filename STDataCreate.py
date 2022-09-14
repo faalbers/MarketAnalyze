@@ -1,4 +1,3 @@
-from pprint import pprint
 import DataScrape as DS
 import logging, pprint
 
@@ -26,41 +25,95 @@ if __name__ == "__main__":
     STData['Quotes'] = {}
 
     # get all stock quotes and sort them
-    mwq_STOCK = set()
-    for quote, data in MSData['MarketWatchQuotes'].items():
-        if data['Type'] == 'STOCK': mwq_STOCK.add(quote)
+    msq_STOCK = set()
+    for quote, data in MSData['MorningStarQuotes'].items():
+        if data['Type'] == 'STOCK': msq_STOCK.add(quote)
+    
     mwqd_stock = set()
     for quote, data in MSData['MarketWatchQuoteData'].items():
         if 'Type' in data and data['Type'] == 'stock': mwqd_stock.add(quote)
-    quotes = list(mwq_STOCK.union(mwqd_stock))
+    
+    quotes = list(msq_STOCK.union(mwqd_stock))
     quotes.sort()
-    print(len(quotes))
 
-    # get quotes with same symbol to find actual quote for ETrade data
-    # add ETSymbol to MarketWatchQuotes if found
-    etradeQuotes = {}
+    # get all symbols with their quote names and upper cased real names
+    symbolsAll = {}
     for quote in quotes:
         symbol = quote.split(':')[0]
-        data = MSData['MarketWatchQuotes'][quote]
-        if not symbol in etradeQuotes: etradeQuotes[symbol] = set()
-        etradeQuotes[symbol].add(quote)
-    for symbol, symbolQuotes in etradeQuotes.items():
+        # clean up name and make upper
+        name = None
+        if quote in MSData['MarketWatchQuotes']:
+            name = MSData['MarketWatchQuotes'][quote]['Name']
+        elif quote in MSData['MorningStarQuotes']:
+            name = MSData['MorningStarQuotes'][quote]['Name']
+        name = name.replace('(%s)' % symbol, '').strip()
+        name = name.replace('.','').replace("'",'').strip()
+        if '(' in name and ')' in name:
+            splits = name.split('(')
+            name = splits[0].strip()
+            for split in splits[1:]:
+                name += ' '+split.split(')')[1].strip()
+        name = name.upper()
+        
+        if not symbol in symbolsAll:
+            symbolsAll[symbol] = {}
+        symbolsAll[symbol][quote] = name.upper()
+    
+    # sort quotes by same name
+    symbols = {}
+    for symbol, squotes in symbolsAll.items():
+        symbols[symbol] = {}
+        for quote, name in squotes.items():
+            if not name in symbols[symbol]:
+                symbols[symbol][name] = []
+            symbols[symbol][name].append(quote)
+
+    # create ETRADE symbol reference
+    etQuotes = {}
+    for symbol, names in symbols.items():
         etData = MSData['ETradeQuoteData'][symbol]
-        for quote in symbolQuotes:
-            MSData['MarketWatchQuotes'][quote]['ETSymbol'] = None
-            if 'All' in etData:
-                exchangeCode = etData['All']['primaryExchange']
-                MIC = quote.split(':')[1]
-                if MIC in MSData['MICs']:
-                    operatingMIC = MSData['MICs'][MIC]['OperatingMic']
-                    if operatingMIC in ETexchToOpMIC[exchangeCode]:
-                        MSData['MarketWatchQuotes'][quote]['ETSymbol'] = symbol
-            elif 'MutualFund' in etData:
-                MIC = quote.split(':')[1]
-                if MIC in MSData['MICToCISO']:
-                    CISO = list(MSData['MICToCISO'][MIC])[0]
-                    if CISO == 'US':
-                        MSData['MarketWatchQuotes'][quote]['ETSymbol'] = symbol
+        for name, nquotes in names.items():
+            for quote in nquotes:
+                etQuotes[quote] = None
+                if 'All' in etData:
+                    exchangeCode = etData['All']['primaryExchange']
+                    MIC = quote.split(':')[1]
+                    if MIC in MSData['MICs']:
+                        operatingMIC = MSData['MICs'][MIC]['OperatingMic']
+                        if operatingMIC in ETexchToOpMIC[exchangeCode]:
+                            etQuotes[quote] = symbol
+                elif 'MutualFund' in etData:
+                    MIC = quote.split(':')[1]
+                    if MIC in MSData['MICToCISO']:
+                        CISO = list(MSData['MICToCISO'][MIC])[0]
+                        if CISO == 'US':
+                            etQuotes[quote] = symbol
+
+    # # get quotes with same symbol to find actual quote for ETrade data
+    # # add ETSymbol to MarketWatchQuotes if found
+    # etradeQuotes = {}
+    # for quote in quotes:
+    #     symbol = quote.split(':')[0]
+    #     data = MSData['MarketWatchQuotes'][quote]
+    #     if not symbol in etradeQuotes: etradeQuotes[symbol] = set()
+    #     etradeQuotes[symbol].add(quote)
+    # for symbol, symbolQuotes in etradeQuotes.items():
+    #     etData = MSData['ETradeQuoteData'][symbol]
+    #     for quote in symbolQuotes:
+    #         MSData['MarketWatchQuotes'][quote]['ETSymbol'] = None
+    #         if 'All' in etData:
+    #             exchangeCode = etData['All']['primaryExchange']
+    #             MIC = quote.split(':')[1]
+    #             if MIC in MSData['MICs']:
+    #                 operatingMIC = MSData['MICs'][MIC]['OperatingMic']
+    #                 if operatingMIC in ETexchToOpMIC[exchangeCode]:
+    #                     MSData['MarketWatchQuotes'][quote]['ETSymbol'] = symbol
+    #         elif 'MutualFund' in etData:
+    #             MIC = quote.split(':')[1]
+    #             if MIC in MSData['MICToCISO']:
+    #                 CISO = list(MSData['MICToCISO'][MIC])[0]
+    #                 if CISO == 'US':
+    #                     MSData['MarketWatchQuotes'][quote]['ETSymbol'] = symbol
 
     values = set()
     for quote in quotes:
@@ -70,6 +123,8 @@ if __name__ == "__main__":
         MIC = quoteSplits[1]
         if MIC == '': continue
         elif not MIC in MSData['MICs']: continue
+
+        symbol = quoteSplits[0]
 
         STData['Quotes'][quote] = {}
 
@@ -109,18 +164,27 @@ if __name__ == "__main__":
         }
         STData['Quotes'][quote]['Data'] = data
 
-        stock['Symbol'] = quoteSplits[0]
-        stock['Name'] = MSData['MarketWatchQuotes'][quote]['Name']
-        for fCISO, fcountry in MSData['CISOs'].items():
-            if 'Country' in MSData['MarketWatchQuotes'][quote]:
-                if fcountry.startswith(MSData['MarketWatchQuotes'][quote]['Country']):
-                    stock['Country'] = fcountry
-                    stock['CISO'] = fCISO
-
+        stock['Symbol'] = symbol
         market['MIC'] = MIC
         market['Name'] = MSData['MICs'][MIC]['Name']
         market['CISO'] = list(MSData['MICToCISO'][MIC])[0]
         market['Country'] = MSData['CISOs'][market['CISO']]
+
+        # handle MarketWatchQuotes
+        if quote in MSData['MarketWatchQuotes']:
+            qdata = MSData['MarketWatchQuotes'][quote]
+            stock['Name'] = qdata['Name']
+            stock['Name'] = stock['Name'].replace('(%s)' % symbol, '').strip()
+            for fCISO, fcountry in MSData['CISOs'].items():
+                if fcountry.startswith(qdata['Country']):
+                    stock['Country'] = fcountry
+                    stock['CISO'] = fCISO
+
+        # handle MorningStarQuotes
+        if quote in MSData['MorningStarQuotes']:
+            qdata = MSData['MorningStarQuotes'][quote]
+            if stock['Name'] == None:
+                stock['Name'] = qdata['Name']
 
         # handle MarketWatchQuoteData
         qdata = MSData['MarketWatchQuoteData'][quote]
@@ -164,11 +228,12 @@ if __name__ == "__main__":
 
 
         # handle MarketWatchQuoteData
-        qdata = MSData['MarketWatchQuotes'][quote]
-        try:
-            if qdata['Sector'] != '':
-                stock['Sector'] = qdata['Sector']
-        except: pass
+        if quote in MSData['MarketWatchQuotes']:
+            qdata = MSData['MarketWatchQuotes'][quote]
+            try:
+                if qdata['Sector'] != '':
+                    stock['Sector'] = qdata['Sector']
+            except: pass
 
         # # get name and deduct strategies from name
         # data['Name'] = MSData['MarketWatchQuotes'][quote]['Name']
@@ -201,8 +266,8 @@ if __name__ == "__main__":
         #     data['Strategies'].add('BALANCEDRISK')
 
         # etrade data
-        if MSData['MarketWatchQuotes'][quote]['ETSymbol'] != None:
-            symbol = MSData['MarketWatchQuotes'][quote]['ETSymbol']
+        if etQuotes[quote] != None:
+            symbol = etQuotes[quote]
             symbolData = MSData['ETradeQuoteData'][symbol]
             if 'Product' in symbolData:
                 if 'securitySubType' in symbolData['Product']:

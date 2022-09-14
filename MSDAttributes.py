@@ -3,10 +3,12 @@ import logging
 
 attrReplace = {
     'MarketWatchQuotes': 'SYMBOL:MIC',
+    'MorningStarQuotes': 'SYMBOL:MIC',
     'MorningStarQuoteData': 'SYMBOL:MIC',
     'MarketWatchQuoteData': 'SYMBOL:MIC',
     'MarketWatchHoldingsData': 'SYMBOL:MIC',
     'ETradeQuoteData': 'SYMBOL',
+    'ETradeMFQuoteData': 'SYMBOL',
     'CISOs': 'CISO',
     'MICs': 'MIC',
     'MICToCISO': 'MIC',
@@ -261,13 +263,14 @@ def quoteFilter(MSData, log=True):
 if __name__ == "__main__":
     DS.setupLogging('MSDAttributes.log', timed=False, new=True)
     scrapedFileName = 'M_DATA_SCRAPED'
+    # scrapedFileName = 'M_DATA_SCRAPED_BACKUP_01'
     MSData = DS.getData(scrapedFileName)
 
-    quotes = quoteFilter(MSData)
-    logging.info('Quotes Count: %s'% len(quotes))
-    keepOnlyKeys(quotes, MSData['MorningStarQuoteData'])
-    keepOnlyKeys(quotes, MSData['MarketWatchQuoteData'])
-    keepOnlyKeys(quotes, MSData['MarketWatchHoldingsData'])
+    # quotes = quoteFilter(MSData)
+    # logging.info('Quotes Count: %s'% len(quotes))
+    # keepOnlyKeys(quotes, MSData['MorningStarQuoteData'])
+    # keepOnlyKeys(quotes, MSData['MarketWatchQuoteData'])
+    # keepOnlyKeys(quotes, MSData['MarketWatchHoldingsData'])
 
     attributes = {}
     dictRecurse(MSData, '', attributes)
