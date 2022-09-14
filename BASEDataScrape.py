@@ -271,14 +271,18 @@ if __name__ == "__main__":
     DS.setupLogging('BASEDataScrape.log', timed=True, new=True)
 
     # retrieving CISO codes
+    # 00:00:00
     getCISOBS4(scrapedFileName)
 
     # retrieving MIC
+    # 00:00:00
     getMICBS4(scrapedFileName)
 
     # retrieving MIC data
+    # 2305 MICs = 00:10:04 (blocked)
     getMICDataBS4(scrapedFileName)
 
     # Create MIC to CISO and CISO to MIC link data
+    # 00:00:00
     getMICCISOLinks(scrapedFileName)
 
