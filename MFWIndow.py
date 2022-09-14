@@ -308,7 +308,6 @@ class MFWindow(QMainWindow):
             name = '"%s"' % fund['Name']
             ftype = '"%s"' % fund['Type']
             marketName = '"%s"' % market['Name']
-            etrade = data['ETradeAvailbility']
 
             family = 'N/A'
             if fund['Family'] != None:
@@ -356,8 +355,8 @@ class MFWindow(QMainWindow):
             sbratio = 'N/A'
             if aadata['StocksBondsRatio'] != None: sbratio = aadata['StocksBondsRatio'][0]
 
-            # # etradeAvailable = 'N/A'
-            # # if data['ETradeAvailbility'] != None: etradeAvailable = '"%s"' % data['ETradeAvailbility']
+            etradeAvailable = 'N/A'
+            if data['ETradeAvailbility'] != None: etradeAvailable = '"%s"' % data['ETradeAvailbility']
 
             out += '%s,%s,%s,%s,%s,' % (symbol, name, family, ftype, msrating)
             out += '%s,%s,' % (expenseRatio, Yield)
@@ -367,7 +366,7 @@ class MFWindow(QMainWindow):
             # out += '%s,%s,%s,' % (bonds, cquality, irsensitivity)
             out += '%s,%s,%s,' % (stocks, bonds, sbratio)
             out += '%s,%s,%s,%s,' % (cap, style, cquality, irsensitivity)
-            out += '%s,%s' % (marketName, etrade)
+            out += '%s,%s' % (marketName, etradeAvailable)
             out += '\n'
 
         with open(CSVFileName, 'w', encoding='utf-8') as f:
