@@ -227,7 +227,7 @@ if __name__ == "__main__":
         except: pass
 
 
-        # handle MarketWatchQuoteData
+        # handle MarketWatchQuotes
         if quote in MSData['MarketWatchQuotes']:
             qdata = MSData['MarketWatchQuotes'][quote]
             try:
