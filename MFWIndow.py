@@ -267,6 +267,9 @@ class MFWindow(QMainWindow):
             if self.maxInvestCheck.isChecked():
                 if data['Data']['MinInvestment'] != None and data['Data']['MinInvestment'][0] > self.maxInvest.value(): continue
 
+            if self.maxFrontLoadCheck.isChecked():
+                if data['Data']['Expense']['FrontLoad'] != None and data['Data']['Expense']['FrontLoad'][0] > self.maxFrontLoad.value(): continue
+
             if stockCap != 'N/A':
                 if data['Data']['Stocks']['Cap'] != stockCap: continue
 
@@ -291,7 +294,7 @@ class MFWindow(QMainWindow):
         out += 'Symbol, Name, Family, Type, MSRating,'
         out += 'ExpenseRatio %, Yield %,'
         # out += 'MinInvestment, ETrade,'
-        out += 'MinInvestment,'
+        out += 'MinInvestment, FrontLoad %,'
         # out += 'Stocks %, Cap, Style,'
         # out += 'Bonds %, CreditQuality, InterestRateSensitivity,'
         out += 'Stocks %, Bonds %, S/B Ratio %,'
@@ -330,6 +333,9 @@ class MFWindow(QMainWindow):
 
             mininvest = 'N/A'
             if data['MinInvestment'] != None: mininvest = data['MinInvestment'][0]
+            
+            frontLoad = 'N/A'
+            if edata['FrontLoad'] != None: frontLoad = edata['FrontLoad'][0]
 
             aadata = data['AssetAllocation']
             stocks = 'N/A'
@@ -361,7 +367,7 @@ class MFWindow(QMainWindow):
             out += '%s,%s,%s,%s,%s,' % (symbol, name, family, ftype, msrating)
             out += '%s,%s,' % (expenseRatio, Yield)
             # # out += '%s,%s,' % (mininvest, etradeAvailable)
-            out += '%s,' % (mininvest)
+            out += '%s,%s,' % (mininvest, frontLoad)
             # out += '%s,%s,%s,' % (stocks, cap, style)
             # out += '%s,%s,%s,' % (bonds, cquality, irsensitivity)
             out += '%s,%s,%s,' % (stocks, bonds, sbratio)

@@ -140,7 +140,8 @@ if __name__ == "__main__":
                 'NetExpenseRatio': None,
                 'TotalExpenseRatio': None,
                 'ExpenseRatio': None,
-                'AdjExpenseRatio': None
+                'AdjExpenseRatio': None,
+                'FrontLoad': None
             },
             'Bonds': {
                 'CreditQuality': None,
@@ -191,6 +192,9 @@ if __name__ == "__main__":
         except: pass
         try:
             fund['Types']['MWQD_SubType'] = qdata['SubType']
+        except: pass
+        try:
+            data['Expense']['FrontLoad'] = qdata['Fees&Expenses']['FrontLoad']
         except: pass
 
         try:
