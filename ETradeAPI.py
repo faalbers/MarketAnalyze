@@ -46,7 +46,12 @@ def getQuoteProc(entries):
         params['detailFlag'] = detailFlag
     response = session.get(url, params=params, headers=headers)
 
-    return json.loads(response.text)
+    try:
+        return json.loads(response.text)
+    except:
+        logging.info('ETradeAPI: Could not get json loads from text on symbol: %s' % symbol)
+        logging.info(response.text)
+        return ''
 
 def unblockSleep(poolVariable, getProc):
     sleepTime = 0

@@ -392,8 +392,9 @@ def quoteDataMSBS4Proc(quote):
 
     morningStars = soup.find('span', class_='mdc-security-header__star-rating')
     if morningStars != None:
-        data['Rating'] = int(morningStars['title'].split()[0])
-
+        ratingText = morningStars['title'].split()[0]
+        if ratingText.isnumeric():
+            data['Rating'] = int(ratingText)
     name = soup.find('div', {'class': 'mdc-security-header__inner'})
     if name != None:
         data['Name'] = name.text.strip().split('\n')[0].strip()
@@ -950,6 +951,7 @@ def getQuoteDataMSBS4(dataFileName, seconds=0, minutes=0, hours=0, days=0):
 
     # quotes = ['VITAX:XNAS:FUND']
     # quotes = ['ADIV:ARCX:ETF']
+    # quotes = ['TSIDX:XNAS:FUND']
 
     sTotal = len(quotes)
     for block in DS.makeMultiBlocks(quotes, 300):
@@ -971,7 +973,7 @@ def getQuoteDataMSBS4(dataFileName, seconds=0, minutes=0, hours=0, days=0):
             exit(0)
         
         sTotal = sTotal - len(block)
-
+     
 def getQuoteDataMWBS4(dataFileName, seconds=0, minutes=0, hours=0, days=0):
     logging.info('Retrieving quote data from MarketWatch')
     MData = DS.getData(dataFileName)
@@ -1166,15 +1168,15 @@ if __name__ == "__main__":
     # # 101387 symbols = 01:43:44
     # getQuotesMSBS4(scrapedFileName, days=historyUpdateDays)
 
-    # get quote data from MorningStar
-    # 32140 quotes = 00:36:50
-    getQuoteDataMSBS4(scrapedFileName, days=historyUpdateDays)
+    # # get quote data from MorningStar
+    # # 32140 quotes = 00:36:50
+    # getQuoteDataMSBS4(scrapedFileName, days=historyUpdateDays)
 
     # # get quote data from MarketWatch
     # # 131840 quotes = 26:29:56
     # getQuoteDataMWBS4(scrapedFileName, days=historyUpdateDays)
     
-    # # get quote data from MarketWatch
+    # # get holdings data from MarketWatch
     # # 41110 quotes = 06:39:24
     # getHoldingsDataMWBS4(scrapedFileName, days=historyUpdateDays)
 
